@@ -9,7 +9,6 @@ setup(
     author='Andruten',
     author_email='andusaben@gmail.com',
     url='https://github.com/andruten/django_loader_dumper',
-    download_url='https://github.com/andruten/django_loader_dumper/archive/0.1.tar.gz',
-    keywords=['django', 'fixtures', 'commands'],
+    keywords=['django', 'fixtures', 'dumpdata', 'loaddata', 'commands', 'json'],
     classifiers=[],
 )
