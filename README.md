@@ -27,9 +27,13 @@ Startup up a new project like so...
     pip install django
     pip install django_loader_dumper
 
-Now you have to call commands like this:
+After creating some data in your database, then you have to call commands like this:
     
     $ ./manage.py fixturedumper app_name_1 app_name_2 app_name_3
     $ ./manage.py fixtureloader app_name_1 app_name_2 app_name_3
+
+If no app_name provided, all app's models will be dumped/loaded. For your local apps, json files will be included in your app folder inside `fixture/` folder. Third-party apps will be created in your project with the `app_name/fixtures/`.
+
+Parameter `--indent=4` can also be provided to the commands.
 
 Enjoy :).
