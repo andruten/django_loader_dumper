@@ -17,7 +17,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('app_name',
-                            help='Provide at least one app name as is listed in INSTALLED_APPS',
+                            nargs='*',
+                            help='Provide app names as is listed in INSTALLED_APPS. '
+                                 'If no app_name provided, will dump everything',
                             type=str)
 
         parser.add_argument('--indent',
@@ -32,6 +34,18 @@ class Command(BaseCommand):
     def get_app_names(self):
         return list(set([model._meta.app_label for model in apps.get_models()]))
 
+    def dump(self, model, app_name, to_file):
+        self.stdout.write("\t{0}:".format(model.__name__))
+        self.stdout.write("\t- Serializing {0} objects...".format(model.objects.all().count()), ending="")
+        self.stdout.flush()
+        serialized_data = serialize(self.format, model.objects.all(), indent=self.indent)
+        self.stdout.write(" [ OK ]")
+        self.stdout.write("\t- Dumping in {0}/fixtures/{1}...".format(app_name, to_file), ending="")
+        self.stdout.flush()
+        with open("{0}/fixtures/{1}".format(app_name, to_file), 'w+') as fixture_file:
+            fixture_file.write(serialized_data)
+            self.stdout.write(" [ OK ]")
+
     def handle(self, *args, **options):
         self.indent = options["indent"]
         dump_app_names = options["app_name"] if options["app_name"] else self.get_app_names()
@@ -41,16 +55,3 @@ class Command(BaseCommand):
             for model in app_models:
                 os.makedirs(os.path.dirname("{0}/fixtures/".format(app_name)), exist_ok=True)
                 self.dump(model, app_name, self.get_json_filename(model.__name__))
-        return True
-
-    def dump(self, model, app_name, to_file):
-        self.stdout.write("\t{0}:".format(model.__name__))
-        self.stdout.write("\t- Serializing {0} objects...".format(model.objects.all().count()), ending="")
-        self.stdout.flush()
-        serialized_data = serialize(self.format, model.objects.all(), indent=self.indent)
-        self.stdout.write(" [ OK ]".format(model.__name__, to_file))
-        self.stdout.write("\t- Dumping in {0}/fixtures/{1}...".format(app_name, to_file), ending="")
-        self.stdout.flush()
-        with open("{0}/fixtures/{1}".format(app_name, to_file), 'w+') as fixture_file:
-            fixture_file.write(serialized_data)
-        self.stdout.write(" [ OK ]".format(model.__name__, to_file))
