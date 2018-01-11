@@ -11,7 +11,7 @@ Commands for loading and dumping fixtures based on app names.
 
 Install using `pip`...
 
-    pip install django_loader_dumper
+    pip install django-loader-dumper
 
 Add `'django_loader_dumper'` to your `INSTALLED_APPS` setting.
 
