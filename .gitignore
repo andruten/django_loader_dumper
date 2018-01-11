@@ -1,0 +1,9 @@
+# IDE
+.idea/
+
+# Cache
+__pycache__/
+*.pyc
+
+# pypirc
+.pypirc
