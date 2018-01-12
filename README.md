@@ -1,6 +1,6 @@
 # Django Loader Dumper
 
-Commands for loading and dumping fixtures based on app names.
+Commands for loading and dumping fixtures based on installed app names inspection.
 
 ## Requirements
 
@@ -29,11 +29,14 @@ Startup up a new project like so...
 
 After creating some data in your database, then you have to call commands like this:
     
-    $ ./manage.py fixturedumper app_name_1 app_name_2 app_name_3
+    $ ./manage.py fixturedumper app_name_1 app_name_2 ...
     $ ./manage.py fixtureloader app_name_1 app_name_2 app_name_3
 
-If no app_name provided, all app's models will be dumped/loaded. For your local apps, json files will be included in your app folder inside `fixture/` folder. Third-party apps will be created in your project with the `app_name/fixtures/`.
+If no app_name provided, all app's models will be dumped/loaded. All fixtures will be created inside your project in `fixtures/app_name` by default.
 
-Parameter `--indent=4` can also be provided to the commands.
+Parameter `--indent` can also be provided to the commands.
+Parameter `--exportpath` can also be provided to the commands if you don't like the default fixtures/ path.
+
+NOTE: Django application `contenttypes` is excluded from this commands because when Django migrates your projects doesn't applies them in the same order. 
 
 Enjoy :).
