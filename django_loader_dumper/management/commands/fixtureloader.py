@@ -6,7 +6,8 @@ from glob import glob
 
 
 class Command(BaseCommand):
-    help = 'Fixture loader. Imports models from fixtures.'
+    help = "Fixture loader. Imports models from fixtures."
+    export_path = "fixtures"
 
     def add_arguments(self, parser):
         # Positional arguments
@@ -14,10 +15,14 @@ class Command(BaseCommand):
                             nargs='*',
                             help='Provide at least one app name as is listed in INSTALLED_APPS',
                             type=str)
+        parser.add_argument('--exportpath',
+                            dest='export_path',
+                            type=str,
+                            help='Export path. Default fixtures/', )
 
     def get_fixtures(self, app_name):
         fixtures = []
-        for fixture_name in glob("{0}/fixtures/*.json".format(app_name)):
+        for fixture_name in glob("{0}/{1}/*.json".format(self.export_path, app_name)):
             fixtures.append({
                 "name": fixture_name,
                 "applied": False,
@@ -26,17 +31,17 @@ class Command(BaseCommand):
         return fixtures
 
     def get_app_names(self):
-        return list(set([model._meta.app_label for model in apps.get_models()]))
+        return [app.label for app in apps.get_app_configs()]
 
     def handle(self, *args, **options):
+        if options["export_path"]:
+            self.export_path = options["export_path"]
         if ".production" in options["settings"]:
             fix = input("Fixtures will be imported in the PRODUCTION environment. Are you sure? [Y/n] ")
             if fix != "Y":
                 self.stderr.write("Operation cancelled.")
                 return False
-
         dump_app_names = options["app_name"] if options["app_name"] else self.get_app_names()
-
         for app_name in dump_app_names:
             fixtures = self.get_fixtures(app_name)
             while [fixture for fixture in fixtures if not fixture["applied"]]:
