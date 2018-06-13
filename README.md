@@ -39,6 +39,8 @@ Startup up a new project like so...
 
 After creating some data in your database, then you have to call commands like this:
     
+    $ ./manage.py fixturedumper 
+    $ ./manage.py fixturedumper --exportpath /path/to/fixtures/
     $ ./manage.py fixturedumper app_name_1 app_name_2 ...
     $ ./manage.py fixtureloader app_name_1 app_name_2 app_name_3
 

@@ -36,7 +36,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options["export_path"]:
             self.export_path = options["export_path"]
-        if ".production" in options["settings"]:
+        if "settings" in options and ".production" in options["settings"]:
             fix = input("Fixtures will be imported in the PRODUCTION environment. Are you sure? [Y/n] ")
             if fix != "Y":
                 self.stderr.write("Operation cancelled.")
